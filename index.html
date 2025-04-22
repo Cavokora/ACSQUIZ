@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATC Training Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    .quiz-container { background: white; padding: 20px; border-radius: 8px; max-width: 800px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { color: #333; text-align: center; }
+    .question { margin-bottom: 20px; }
+    .options label { display: block; margin: 5px 0; }
+    .submit-btn { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; }
+    .result { font-weight: bold; font-size: 18px; margin-top: 20px; }
+    .correct-answer { color: green; }
+    .incorrect-answer { color: red; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2>ATC Training Quiz</h2>
+    <form id="quizForm"></form>
+    <button type="button" class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const questions = JSON.parse(`[
+      {"question":"What transponder code is used for VFR flights in most countries?","options":["7500","7600","7700","1200"],"answer":"1200"},
+      {"question":"Which phrase indicates that radar identification has been established?","options":["Radar contact","Squawk ident","Identify yourself","Confirm heading"],"answer":"Radar contact"},
+      {"question":"What does the instruction 'Climb and maintain FL100' mean?","options":["Descend to 10,000 ft","Climb to Flight Level 100 and stay","Climb to 1,000 ft","Fly level at FL100 until further notice"],"answer":"Climb to Flight Level 100 and stay"},
+      {"question":"Which term describes vertical separation standards below FL290?","options":["RVSM","Non-RVSM","QNH","QFE"],"answer":"Non-RVSM"},
+      {"question":"What is the minimum safe altitude warning (MSAW) designed to prevent?","options":["Loss of communication","Terrain collision","Runway incursion","Transponder failure"],"answer":"Terrain collision"},
+      {"question":"The phrase 'Maintain present heading' instructs the pilot to: ","options":["Turn to current heading","Hold current heading","Climb on current heading","Descend on current heading"],"answer":"Hold current heading"},
+      {"question":"Which code indicates an emergency due to unlawful interference?","options":["7500","7600","7700","7777"],"answer":"7500"},
+      {"question":"What does 'Squawk ident' request the pilot to do?","options":["Change code to 7700","Activate transponder identification feature","Switch off transponder","Reset transponder"],"answer":"Activate transponder identification feature"},
+      {"question":"The instruction 'Turn left heading 180' means:","options":["Fly heading 180 then turn left","Turn left onto heading 180","Fly left of heading 180","Descend to 1800 ft after turning left"],"answer":"Turn left onto heading 180"},
+      {"question":"What separation is provided by applying standard radar separation minima?","options":["5 NM laterally","1000 ft vertically","3 NM laterally","2000 ft vertically"],"answer":"5 NM laterally"},
+      {"question":"What does 'Descend via STAR' allow a pilot to do?","options":["Descend following the Standard Instrument Departure","Descend following the Standard Terminal Arrival Route","Descend directly to the airport","Descend using any preferred path"],"answer":"Descend following the Standard Terminal Arrival Route"},
+      {"question":"Which frequency is typically used for emergency communications?","options":["121.5 MHz","123.45 MHz","118.1 MHz","131.8 MHz"],"answer":"121.5 MHz"},
+      {"question":"What is the phraseology to give clearance to land?","options":["Cleared to land","Proceed to land","Permission to land granted","Land approved"],"answer":"Cleared to land"},
+      {"question":"Which term indicates a loss of radio communication?","options":["7500","7600","7700","7601"],"answer":"7600"},
+      {"question":"What does 'Maintain FL at or above assigned level' mean?","options":["Climb above FL","Maintain current FL until further notice","Climb above initial flight level","Descend to assigned level"],"answer":"Maintain current FL until further notice"},
+      {"question":"Which service provides safety alerts and traffic information?","options":["Approach Control","Flight Information Service","Air Traffic Advisory Service","Upper Area Control"],"answer":"Flight Information Service"},
+      {"question":"What indicates transfer of communication to another unit?","options":["Contact center on frequency X","Proceed to frequency X","Climb to frequency X","Descend on frequency X"],"answer":"Contact center on frequency X"},
+      {"question":"Which document lists the codes for SSR codes use?","options":["ICAO Annex 10","AIP","LOM booklet","LOM GATE ACC"],"answer":"AIP"},
+      {"question":"What altitude separation is standard above FL290?","options":["2000 ft","1000 ft","3000 ft","500 ft"],"answer":"2000 ft"},
+      {"question":"Which phrase means that the aircraft is now in radar coverage?","options":["Radar service terminated","Radar service initiated","Radar contact","Radar vectoring"],"answer":"Radar contact"},
+      {"question":"What is the correct response to 'Cleared for the option'?","options":["Perform touch-and-go, low approach or full stop","Proceed to the option of approach","Hold at current position","Circle as requested"],"answer":"Perform touch-and-go, low approach or full stop"},
+      {"question":"Which phrase is used to instruct an aircraft to maintain speed?","options":["Maintain speed","Reduce speed","Hold speed","Resume speed"],"answer":"Maintain speed"},
+      {"question":"What does 'Unidentified traffic, 2 o’clock, 5 NM' mean?","options":["Traffic on your heading","Traffic ahead and to your right at 5 NM","Traffic behind you","Traffic crossing your path"],"answer":"Traffic ahead and to your right at 5 NM"},
+      {"question":"Which phrase authorizes a pilot to backtrack on runway?","options":["Cleared to backtrack","Cleared to taxi","Cleared to cross","Cleared for takeoff"],"answer":"Cleared to backtrack"},
+      {"question":"What does 'Resume own navigation' instruct?","options":["Fly own navigation following last heading","Use own navigation system from now","Resume original flight plan without vectors","Resume navigation at pilot’s discretion"],"answer":"Resume original flight plan without vectors"},
+      {"question":"Which minima apply for non-radar separation?","options":["5 NM or 1000 ft","3 NM or 500 ft","10 NM or 2000 ft","8 NM or 1500 ft"],"answer":"10 NM or 2000 ft"},
+      {"question":"What does the term 'Cleared direct' mean?","options":["Fly direct to waypoint","Fly direct and avoid traffic","Fly direct and climb","Fly direct after runway"],"answer":"Fly direct to waypoint"},
+      {"question":"Which phrase is used to cancel IFR clearance on ground?","options":["Cancel IFR","IFR cancelled","Cancel clearance","Cancel all frequencies"],"answer":"Cancel clearance"},
+      {"question":"What altitude will be indicated if QNH is set instead of QFE?","options":["Airport elevation","Sea level altitude","Pressure altitude","Indicated altitude above sea level"],"answer":"Indicated altitude above sea level"},
+      {"question":"Which phrase describes a holds pattern entry?","options":["Parallel entry","Direct entry","Teardrop entry","All of the above"],"answer":"All of the above"},
+      {"question":"What does 'Say altitude' request from the pilot?","options":["Report current altitude","Descend to given altitude","Climb to given altitude","Confirm cleared altitude"],"answer":"Report current altitude"},
+      {"question":"Which unit provides area control above terminal airspace?","options":["ACC","APP","TWR","FIS"],"answer":"ACC"},
+      {"question":"What phrase indicates clearance limit reached?","options":["Standby for further clearance","Proceed as cleared","Reached clearance limit","Abandon IFR"],"answer":"Reached clearance limit"},
+      {"question":"Which phraseology is used for holding clearance?","options":["Hold at waypoint ABC","Enter hold at ABC","Maintain 5000 ft hold","Proceed to hold"],"answer":"Enter hold at ABC"},
+      {"question":"What does 'Cleared via SID' allow?","options":["Fly Standard Instrument Departure","Fly Standard Instrument Arrival","Fly approach procedure","Fly missed approach"],"answer":"Fly Standard Instrument Departure"},
+      {"question":"Which transponder code indicates radio failure?","options":["7600","7500","7700","7000"],"answer":"7600"},
+      {"question":"What is the phrase to resume own navigation after vectors?","options":["Resume own navigation","Contact departure","Continue present heading","Fly direct to fix"],"answer":"Resume own navigation"},
+      {"question":"Which phrase authorizes climb on SID?","options":["Climb via SID","Climb to altitude","Climb and maintain FL100","Climb to MEA"],"answer":"Climb via SID"},
+      {"question":"What does 'Maintain visual separation' mean?","options":["Pilot is responsible for separation","Controller provides separation visually","Maintain VFR separation","Maintain radar separation visually"],"answer":"Pilot is responsible for separation"},
+      {"question":"Which minima apply in RVSM airspace?","options":["1000 ft vertically","2000 ft vertically","3000 ft vertically","500 ft vertically"],"answer":"1000 ft vertically"},
+      {"question":"What does 'Expedite climb' instruct the pilot to do?","options":["Climb as quickly as possible","Climb at maximum continuous thrust","Climb at recommended rate","Climb on schedule"],"answer":"Climb as quickly as possible"},
+      {"question":"Which phrase cancels the last issued clearance?","options":["Cancel clearance","Standby for clearance","Cancel last clearance","Withdraw clearance"],"answer":"Cancel last clearance"},
+      {"question":"What does 'Squawk 7777' signify?","options":["Military interception","Radio failure","Hijack","General aviation VFR"],"answer":"Military interception"}
+    ]`);
+
+    // Render quiz questions
+    const form = document.getElementById('quizForm');
+    questions.forEach((q, index) => {
+      const div = document.createElement('div');
+      div.className = 'question';
+      div.innerHTML = `
+        <p><strong>Q${index + 1}: ${q.question}</strong></p>
+        ${q.options.map(opt => `
+          <div class="options">
+            <label><input type="radio" name="q${index}" value="${opt}"> ${opt}</label>
+          </div>
+        `).join('')}
+      `;
+      form.appendChild(div);
+    });
+
+    function submitQuiz() {
+      let score = 0;
+      let feedback = '';
+      questions.forEach((q, index) => {
+        const sel = document.querySelector(`input[name=q${index}]:checked`);
+        const userAns = sel ? sel.value : 'No answer';
+        const isCorrect = userAns === q.answer;
+        if (isCorrect) score++;
+        feedback += `
+          <p><strong>Q${index + 1}: ${q.question}</strong><br>
+          Your answer: <span class="${isCorrect ? 'correct-answer' : 'incorrect-answer'}">${userAns}</span><br>
+          Correct answer: <span class="correct-answer">${q.answer}</span></p>
+        `;
+      });
+      const pct = (score / questions.length) * 100;
+      document.getElementById('result').innerHTML =
+        `<p>You scored ${score}/${questions.length} (${pct.toFixed(1)}%). ${pct >= 75 ? 'Passed ✅' : 'Failed ❌'}</p>` + feedback;
+    }
+  </script>
+</body>
+</html>
