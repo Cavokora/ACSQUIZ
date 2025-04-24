@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prishtina ACC Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #timer { font-size: 1.2em; margin-bottom: 10px; color: #d00; }
+    .question { margin-bottom: 15px; }
+    .question p { margin: 5px 0; }
+    #resultDiv { font-size: 1.2em; margin-top: 20px; }
+    button { padding: 5px 10px; font-size: 1em; }
+  </style>
+</head>
+<body>
+
+  <div id="nameDiv">
+    <h1>Prishtina ACC Quiz</h1>
+    <label for="username">Enter your name:</label>
+    <input type="text" id="username" />
+    <button type="button" onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <div id="quizDiv" style="display:none;">
+    <div id="timer">17:00</div>
+    <form id="quizForm"></form>
+    <button type="button" onclick="submitQuiz()">Submit</button>
+  </div>
+
+  <div id="resultDiv" style="display:none;"></div>
+
+  <script>
+    const quizData = [{"question": "Which message type is used for requesting tactical instructions?", "options": ["TIP", "TIM", "RTI", "REL"], "answer": "RTI"}, {"question": "What must be included in the OP TEXT when coordination has been done for a manual inbound estimate?", "options": ["Flight plan number only", "Runway", "QNH", "and time of coordination", "Controller initials", "Aircraft registration"], "answer": "Runway, QNH, and time of coordination"}, {"question": "Which message type is used for requesting tactical instructions?", "options": ["TIP", "TIM", "RTI", "REL"], "answer": "RTI"}, {"question": "What must be included in the OP TEXT when coordination has been done for a manual inbound estimate?", "options": ["Flight plan number only", "Runway", "QNH", "and time of coordination", "Controller initials", "Aircraft registration"], "answer": "Runway, QNH, and time of coordination"}, {"question": "What should be done upon termination of a holding at LWSK according to Prishtina ACC procedures?", "options": ["Issue a new STAR clearance", "Execute the HOLD input again", "Execute the XHOLD input", "Notify the aircraft to switch to tower frequency"], "answer": "Execute the XHOLD input"}, {"question": "What is the main responsibility of the Executive Controller (EC) in a Prishtina ACC sector?", "options": ["To assist the Planner Controller during emergency descents", "To ensure accurate FDR entry and coordination of emergency calls", "To provide ATS to IFR flights and maintain separation within the sector", "To coordinate with adjacent ATC units about runway closures"], "answer": "To provide ATS to IFR flights and maintain separation within the sector"}, {"question": "What should be done upon termination of a holding at LWSK according to Prishtina ACC procedures?", "options": ["Issue a new STAR clearance", "Execute the HOLD input again", "Execute the XHOLD input", "Notify the aircraft to switch to tower frequency"], "answer": "Execute the XHOLD input"}, {"question": "True or False: In Prishtina ACC, both the EC and PLC are required to keep an updated sector log.", "options": ["True", "False"], "answer": "True"}, {"question": "True or False: In Prishtina ACC, both the EC and PLC are required to keep an updated sector log.", "options": ["True", "False"], "answer": "True"}, {"question": "What should be done upon termination of a holding at LWSK according to Prishtina ACC procedures?", "options": ["Issue a new STAR clearance", "Execute the HOLD input again", "Execute the XHOLD input", "Notify the aircraft to switch to tower frequency"], "answer": "Execute the XHOLD input"}, {"question": "Which message type is used for requesting tactical instructions?", "options": ["TIP", "TIM", "RTI", "REL"], "answer": "RTI"}, {"question": "What is the main responsibility of the Executive Controller (EC) in a Prishtina ACC sector?", "options": ["To assist the Planner Controller during emergency descents", "To ensure accurate FDR entry and coordination of emergency calls", "To provide ATS to IFR flights and maintain separation within the sector", "To coordinate with adjacent ATC units about runway closures"], "answer": "To provide ATS to IFR flights and maintain separation within the sector"}, {"question": "True or False: In Prishtina ACC, both the EC and PLC are required to keep an updated sector log.", "options": ["True", "False"], "answer": "True"}, {"question": "Which message type is used for requesting tactical instructions?", "options": ["TIP", "TIM", "RTI", "REL"], "answer": "RTI"}, {"question": "True or False: In Prishtina ACC, both the EC and PLC are required to keep an updated sector log.", "options": ["True", "False"], "answer": "True"}, {"question": "True or False: In Prishtina ACC, both the EC and PLC are required to keep an updated sector log.", "options": ["True", "False"], "answer": "True"}, {"question": "What must be included in the OP TEXT when coordination has been done for a manual inbound estimate?", "options": ["Flight plan number only", "Runway", "QNH", "and time of coordination", "Controller initials", "Aircraft registration"], "answer": "Runway, QNH, and time of coordination"}, {"question": "What must be included in the OP TEXT when coordination has been done for a manual inbound estimate?", "options": ["Flight plan number only", "Runway", "QNH", "and time of coordination", "Controller initials", "Aircraft registration"], "answer": "Runway, QNH, and time of coordination"}, {"question": "What should be done upon termination of a holding at LWSK according to Prishtina ACC procedures?", "options": ["Issue a new STAR clearance", "Execute the HOLD input again", "Execute the XHOLD input", "Notify the aircraft to switch to tower frequency"], "answer": "Execute the XHOLD input"}, {"question": "What must be included in the OP TEXT when coordination has been done for a manual inbound estimate?", "options": ["Flight plan number only", "Runway", "QNH", "and time of coordination", "Controller initials", "Aircraft registration"], "answer": "Runway, QNH, and time of coordination"}, {"question": "True or False: In Prishtina ACC, both the EC and PLC are required to keep an updated sector log.", "options": ["True", "False"], "answer": "True"}, {"question": "What is the main responsibility of the Executive Controller (EC) in a Prishtina ACC sector?", "options": ["To assist the Planner Controller during emergency descents", "To ensure accurate FDR entry and coordination of emergency calls", "To provide ATS to IFR flights and maintain separation within the sector", "To coordinate with adjacent ATC units about runway closures"], "answer": "To provide ATS to IFR flights and maintain separation within the sector"}, {"question": "True or False: In Prishtina ACC, both the EC and PLC are required to keep an updated sector log.", "options": ["True", "False"], "answer": "True"}, {"question": "Which message type is used for requesting tactical instructions?", "options": ["TIP", "TIM", "RTI", "REL"], "answer": "RTI"}, {"question": "What is the main responsibility of the Executive Controller (EC) in a Prishtina ACC sector?", "options": ["To assist the Planner Controller during emergency descents", "To ensure accurate FDR entry and coordination of emergency calls", "To provide ATS to IFR flights and maintain separation within the sector", "To coordinate with adjacent ATC units about runway closures"], "answer": "To provide ATS to IFR flights and maintain separation within the sector"}, {"question": "What should be done upon termination of a holding at LWSK according to Prishtina ACC procedures?", "options": ["Issue a new STAR clearance", "Execute the HOLD input again", "Execute the XHOLD input", "Notify the aircraft to switch to tower frequency"], "answer": "Execute the XHOLD input"}, {"question": "What must be included in the OP TEXT when coordination has been done for a manual inbound estimate?", "options": ["Flight plan number only", "Runway", "QNH", "and time of coordination", "Controller initials", "Aircraft registration"], "answer": "Runway, QNH, and time of coordination"}, {"question": "What must be included in the OP TEXT when coordination has been done for a manual inbound estimate?", "options": ["Flight plan number only", "Runway", "QNH", "and time of coordination", "Controller initials", "Aircraft registration"], "answer": "Runway, QNH, and time of coordination"}, {"question": "True or False: In Prishtina ACC, both the EC and PLC are required to keep an updated sector log.", "options": ["True", "False"], "answer": "True"}, {"question": "What should be done upon termination of a holding at LWSK according to Prishtina ACC procedures?", "options": ["Issue a new STAR clearance", "Execute the HOLD input again", "Execute the XHOLD input", "Notify the aircraft to switch to tower frequency"], "answer": "Execute the XHOLD input"}, {"question": "What must be included in the OP TEXT when coordination has been done for a manual inbound estimate?", "options": ["Flight plan number only", "Runway", "QNH", "and time of coordination", "Controller initials", "Aircraft registration"], "answer": "Runway, QNH, and time of coordination"}, {"question": "What is the main responsibility of the Executive Controller (EC) in a Prishtina ACC sector?", "options": ["To assist the Planner Controller during emergency descents", "To ensure accurate FDR entry and coordination of emergency calls", "To provide ATS to IFR flights and maintain separation within the sector", "To coordinate with adjacent ATC units about runway closures"], "answer": "To provide ATS to IFR flights and maintain separation within the sector"}, {"question": "Which message type is used for requesting tactical instructions?", "options": ["TIP", "TIM", "RTI", "REL"], "answer": "RTI"}, {"question": "What should be done upon termination of a holding at LWSK according to Prishtina ACC procedures?", "options": ["Issue a new STAR clearance", "Execute the HOLD input again", "Execute the XHOLD input", "Notify the aircraft to switch to tower frequency"], "answer": "Execute the XHOLD input"}, {"question": "What is the main responsibility of the Executive Controller (EC) in a Prishtina ACC sector?", "options": ["To assist the Planner Controller during emergency descents", "To ensure accurate FDR entry and coordination of emergency calls", "To provide ATS to IFR flights and maintain separation within the sector", "To coordinate with adjacent ATC units about runway closures"], "answer": "To provide ATS to IFR flights and maintain separation within the sector"}, {"question": "Which message type is used for requesting tactical instructions?", "options": ["TIP", "TIM", "RTI", "REL"], "answer": "RTI"}, {"question": "What is the main responsibility of the Executive Controller (EC) in a Prishtina ACC sector?", "options": ["To assist the Planner Controller during emergency descents", "To ensure accurate FDR entry and coordination of emergency calls", "To provide ATS to IFR flights and maintain separation within the sector", "To coordinate with adjacent ATC units about runway closures"], "answer": "To provide ATS to IFR flights and maintain separation within the sector"}, {"question": "Which message type is used for requesting tactical instructions?", "options": ["TIP", "TIM", "RTI", "REL"], "answer": "RTI"}, {"question": "What is the main responsibility of the Executive Controller (EC) in a Prishtina ACC sector?", "options": ["To assist the Planner Controller during emergency descents", "To ensure accurate FDR entry and coordination of emergency calls", "To provide ATS to IFR flights and maintain separation within the sector", "To coordinate with adjacent ATC units about runway closures"], "answer": "To provide ATS to IFR flights and maintain separation within the sector"}, {"question": "What should be done upon termination of a holding at LWSK according to Prishtina ACC procedures?", "options": ["Issue a new STAR clearance", "Execute the HOLD input again", "Execute the XHOLD input", "Notify the aircraft to switch to tower frequency"], "answer": "Execute the XHOLD input"}];
+
+    let timeLeft = 17 * 60;
+    let timerInterval;
+
+    function startQuiz() {
+      const name = document.getElementById('username').value.trim();
+      if (!name) {
+        alert('Please enter your name.');
+        return;
+      }
+      document.getElementById('nameDiv').style.display = 'none';
+      document.getElementById('quizDiv').style.display = '';
+      generateQuiz();
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+      const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+      const seconds = String(timeLeft % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        submitQuiz();
+      }
+      timeLeft--;
+    }
+
+    function generateQuiz() {
+      const form = document.getElementById('quizForm');
+      quizData.forEach((item, i) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        const p = document.createElement('p');
+        p.textContent = `${i + 1}. ${item.question}`;
+        qDiv.appendChild(p);
+        item.options.forEach(opt => {
+          const label = document.createElement('label');
+          const radio = document.createElement('input');
+          radio.type = 'radio';
+          radio.name = `q${i}`;
+          radio.value = opt;
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(opt));
+          qDiv.appendChild(label);
+          qDiv.appendChild(document.createElement('br'));
+        });
+        form.appendChild(qDiv);
+      });
+    }
+
+    function submitQuiz() {
+      clearInterval(timerInterval);
+      let score = 0;
+      quizData.forEach((item, i) => {
+        const sel = document.querySelector(`input[name="q${i}"]:checked`);
+        if (sel && sel.value === item.answer) score++;
+      });
+      const name = document.getElementById('username').value.trim();
+      document.getElementById('quizDiv').style.display = 'none';
+      const rd = document.getElementById('resultDiv');
+      rd.style.display = '';
+      rd.innerHTML = `<h2>Thank you, ${name}!</h2><p>Your score: ${score} out of ${quizData.length}</p>`;
+    }
+  </script>
+
+</body>
+</html>
