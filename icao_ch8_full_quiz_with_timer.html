@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ICAO Doc 4444 Chapter 8 Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .question { margin-bottom: 20px; }
+    .result { font-size: 1.2em; margin-top: 20px; }
+    .correct { color: green; }
+    .incorrect { color: red; }
+    #timer { font-size: 1.2em; font-weight: bold; margin-bottom: 20px; color: red; }
+  </style>
+</head>
+<body>
+
+<h1>ICAO Doc 4444 Chapter 8 - ATS Surveillance Services Quiz</h1>
+<div id="timer">Time Remaining: 20:00</div>
+<form id="quizForm">
+<div id="quizQuestions"></div>
+<button type="button" onclick="submitQuiz()">Submit Quiz</button>
+</form>
+
+<div id="result" class="result"></div>
+
+<script>
+const questions = [
+  { q: "1. What is the main objective of ATS surveillance systems?", options: ["Providing weather updates to pilots", "Supporting efficient separation and identification of aircraft", "Managing navigation aids", "Broadcasting NOTAM information"], answer: "B" },
+  { q: "2. Which surveillance source does not require aircraft transmission?", options: ["ADS-B", "SSR", "PSR", "ADS-C"], answer: "C" },
+  { q: "3. Mode C in SSR provides controllers with:", options: ["Aircraft ground speed", "Aircraft heading", "Aircraft pressure altitude", "Assigned squawk code"], answer: "C" },
+  { q: "4. Which system primarily provides surveillance information in procedural airspace?", options: ["PSR", "Flight plan and position reports", "SMR", "SSR Mode S"], answer: "B" },
+  { q: "5. Conflict alert systems are intended to:", options: ["Improve data link communications", "Detect minimum separation infringements", "Monitor runway incursions", "Warn of meteorological hazards"], answer: "B" },
+  { q: "6. The SSR emergency code 7700 indicates:", options: ["Communication failure", "Hijacking", "General emergency", "Loss of navigation capability"], answer: "C" },
+  { q: "7. Which surveillance method requires GNSS accuracy?", options: ["Primary radar", "ADS-B", "Mode A SSR", "Surface Movement Radar"], answer: "B" },
+  { q: "8. In the event of radar data degradation, the controller should:", options: ["Transfer aircraft to VFR", "Increase separation minima or revert to procedural control", "Issue mandatory heading changes", "Ignore and continue radar services"], answer: "B" },
+  { q: "9. When identification of an aircraft is lost, the controller must:", options: ["Issue an emergency code immediately", "Attempt to re-identify the aircraft", "Terminate the flight plan", "Require the pilot to squawk standby"], answer: "B" },
+  { q: "10. Label clutter on the radar display is mitigated by:", options: ["Removing SSR codes", "Automatic label suppression in high-density areas", "Increasing radar range", "Assigning more radio frequencies"], answer: "B" },
+  { q: "11. Surface Movement Radar (SMR) assists primarily in:", options: ["Separation of en-route aircraft", "Ground traffic monitoring during low visibility", "Airborne conflict alerts", "Monitoring taxi clearance delivery"], answer: "B" },
+  { q: "12. Situation display elements must include:", options: ["Flight plan route overlays", "Altitude, position, and aircraft identification", "Meteorological satellite images", "Ground-based obstacle lighting"], answer: "B" },
+  { q: "13. What characterizes a PSR-only target on a situation display?", options: ["Fully identified label", "Altitude and identity", "Unidentified blip without altitude", "Squawk-flash identification"], answer: "C" },
+  { q: "14. Which surveillance system relies on active interrogation and reply?", options: ["PSR", "ADS-C", "SSR", "SMR"], answer: "C" },
+  { q: "15. SMR use is typically limited to:", options: ["Surveillance beyond 50 nautical miles", "Movement area operations at aerodromes", "Tracking aircraft during missed approaches", "Monitoring emergency descents"], answer: "B" },
+  { q: "16. A 'predicted position' label appears when:", options: ["An aircraft changes squawk code", "The system does not receive an updated position report", "The aircraft changes destination", "A flight deviates from cleared altitude"], answer: "B" },
+  { q: "17. A minimum safe altitude warning (MSAW) is triggered when an aircraft:", options: ["Exceeds assigned airspeed", "Approaches unsafe terrain proximity", "Deviates horizontally from airway", "Enters RVSM airspace unapproved"], answer: "B" },
+  { q: "18. Mode S SSR offers an advantage by providing:", options: ["Enhanced radar range", "Aircraft-specific information like call sign", "Automatic weather broadcasts", "Ground surveillance of airport lighting"], answer: "B" },
+  { q: "19. ADS-B transmissions are typically:", options: ["Interrogated by ground stations", "Pilot-initiated manual updates", "Automatic broadcast without interrogation", "Relayed via VHF voice"], answer: "C" },
+  { q: "20. The code 7600 is used for:", options: ["Hijack alert", "Communication failure", "General emergency", "Diversion notification"], answer: "B" },
+  { q: "21. Which minimum separation is allowed using ATS surveillance services in terminal airspace?", options: ["10 NM", "5 NM", "3 NM", "2 NM"], answer: "C" },
+  { q: "22. When is it acceptable to use SSR-only separation?", options: ["When no altitude info available", "If accuracy and reliability criteria are satisfied", "Only during surface movement operations", "In VMC only"], answer: "B" },
+  { q: "23. SMR should display:", options: ["Aircraft identity and altitude", "Position of aircraft and vehicles", "Assigned speed and flight plans", "Weather radar sweeps"], answer: "B" },
+  { q: "24. ADS-C is primarily used in:", options: ["Terminal areas", "Surface movement radar", "Oceanic or remote areas", "Ground vehicle tracking"], answer: "C" },
+  { q: "25. If an emergency is declared, the surveillance system should:", options: ["Prioritize the track and highlight visually", "Remove aircraft from radar", "Delete all labels except emergency flight", "Inhibit all conflict alerts"], answer: "A" },
+  { q: "26. Which type of surveillance is least dependent on weather conditions?", options: ["PSR", "ADS-B", "ADS-C", "Mode S SSR"], answer: "A" },
+  { q: "27. An aircraft identification through 'squawk ident' means the pilot:", options: ["Changes the squawk code manually", "Activates a special transponder pulse", "Sends ADS-B emergency", "Reports via CPDLC"], answer: "B" },
+  { q: "28. What is typically NOT available from primary radar data?", options: ["Position", "Identification", "Movement detection", "Conflict detection potential"], answer: "B" },
+  { q: "29. What must a controller ensure before using radar separation minima?", options: ["Procedural control established", "Identification is established and maintained", "Pilots accept the vector", "Weather approves the radar update"], answer: "B" },
+  { q: "30. The SSR code 7500 indicates:", options: ["Navigation equipment failure", "Loss of communication", "Unlawful interference", "Emergency descent"], answer: "C" },
+  { q: "31. A requirement for ATS surveillance system backup includes:", options: ["Provision of emergency frequency", "Alternate means for providing separation", "Automatic NOTAM issuing", "Use Mode S only"], answer: "B" },
+  { q: "32. A surveillance service that provides vectors to avoid obstacles is called:", options: ["Terminal conflict alert", "Minimum Safe Altitude Warning", "Surface movement monitoring", "Controlled transition service"], answer: "B" },
+  { q: "33. If radar identification is doubtful, the controller must:", options: ["Continue radar service", "Re-identify or discontinue surveillance", "Assume correct identification", "Switch aircraft frequency"], answer: "B" },
+  { q: "34. Surveillance services contribute to:", options: ["Longer tracks", "Greater sector capacity", "More reroutes", "Lower pilot workload only"], answer: "B" },
+  { q: "35. Loss of ATS surveillance coverage must be:", options: ["Hidden from pilots", "Immediately communicated", "Reported after closing", "Managed internally only"], answer: "B" },
+  { q: "36. Which surveillance system is most useful for taxiway control?", options: ["SSR Mode A/C", "Surface Movement Radar", "ADS-B Out", "PSR en route"], answer: "B" },
+  { q: "37. Surveillance vectoring is terminated when:", options: ["Conflict detection lost", "Aircraft resume own navigation", "SSR code changes", "Altitude change occurs"], answer: "B" },
+  { q: "38. Essential traffic info must be passed when:", options: ["Crossing at different altitudes", "Separation minima compromised", "Flight plan amendment", "ADS-C delay"], answer: "B" },
+  { q: "39. ADS-B ground stations are vulnerable to:", options: ["Weather radar failures", "GNSS signal degradation", "ILS glide slope malfunctions", "PSR antenna outages"], answer: "B" },
+  { q: "40. Reduced radar separation minima depend on:", options: ["Traffic load", "Surveillance system accuracy and reliability", "Pilot preference", "Weather updates"], answer: "B" }
+];
+
+function loadQuestions() {
+  const container = document.getElementById('quizQuestions');
+  questions.forEach((item, index) => {
+    let qHtml = `<div class='question'><p>${item.q}</p>`;
+    ['A', 'B', 'C', 'D'].forEach((letter, i) => {
+      qHtml += `<input type='radio' name='q${index + 1}' value='${letter}'> ${letter}) ${item.options[i]}<br>`;
+    });
+    qHtml += `</div>`;
+    container.innerHTML += qHtml;
+  });
+}
+
+function submitQuiz() {
+  clearInterval(timer);
+  let score = 0;
+  questions.forEach((item, index) => {
+    let selected = document.querySelector(`input[name='q${index + 1}']:checked`);
+    if (selected && selected.value === item.answer) score++;
+  });
+  let percentage = (score / questions.length) * 100;
+  let resultHTML = `<h2>Your Score: ${score}/${questions.length} (${percentage.toFixed(2)}%)</h2>`;
+  if (percentage >= 75) {
+    resultHTML += "<p class='correct'>Congratulations! You passed.</p>";
+  } else {
+    resultHTML += "<p class='incorrect'>You did not pass. Please try again.</p>";
+  }
+  document.getElementById('result').innerHTML = resultHTML;
+}
+
+let timeLeft = 1200; // 20 minutes
+let timer;
+
+function startTimer() {
+  timer = setInterval(function() {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    document.getElementById('timer').textContent = `Time Remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      alert('Time is up! Submitting quiz.');
+      submitQuiz();
+    }
+    timeLeft--;
+  }, 1000);
+}
+
+window.onload = function() {
+  loadQuestions();
+  startTimer();
+};
+</script>
+
+</body>
+</html>
