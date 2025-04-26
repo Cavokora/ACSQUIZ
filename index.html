@@ -1,94 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATS Surveillance Systems Quiz</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1, h2 { text-align: center; }
-        .question { margin-bottom: 20px; }
-        .timer { font-size: 20px; text-align: center; margin-bottom: 20px; }
-        button { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATS Surveillance Quiz</title>
+  <style>
+    .correct { background-color: #c8f7c5; }
+    .incorrect { background-color: #f7c5c5; }
+  </style>
+  <script>
+    let timeLeft = 15 * 60;
+    let timer;
+
+    function startTimer() {
+      timer = setInterval(function() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        document.getElementById('timer').textContent = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+        timeLeft--;
+
+        if (timeLeft < 0) {
+          clearInterval(timer);
+          alert("Time's up! Submitting quiz.");
+          gradeQuiz();
+        }
+      }, 1000);
+    }
+
+    function submitQuiz(event) {
+      event.preventDefault();
+      clearInterval(timer);
+      gradeQuiz();
+    }
+
+    function gradeQuiz() {
+      let correctAnswers = [
+        "B", "B", "C", "C", "C", "B", "B", "B", "B", "C",
+        "A", "A", "A", "A", "D", "C", "C", "B", "B", "C",
+        "C", "B", "B", "C", "B", "B", "B", "B", "B", "B",
+        "B", "B", "B", "C", "B", "B", "B", "A", "B", "A"
+      ];
+
+      let score = 0;
+      correctAnswers.forEach((answer, index) => {
+        let q = document.getElementsByName('q' + (index + 1));
+        let answered = false;
+        for (let i = 0; i < q.length; i++) {
+          let optionText = q[i].nextSibling.textContent.trim();
+          if (optionText.startsWith(answer)) {
+            q[i].parentNode.classList.add('correct');
+          }
+          if (q[i].checked) {
+            answered = true;
+            if (optionText.startsWith(answer)) {
+              score++;
+            } else {
+              q[i].parentNode.classList.add('incorrect');
+            }
+          }
+        }
+      });
+
+      let percentage = (score / correctAnswers.length) * 100;
+      let resultText = `You scored ${score} out of ${correctAnswers.length} (${percentage.toFixed(2)}%).\n`;
+      resultText += percentage >= 75 ? "✅ Congratulations, you passed!" : "❌ Sorry, you did not pass.";
+      alert(resultText);
+    }
+
+    window.onload = startTimer;
+  </script>
 </head>
 <body>
-    <h1>ATS Surveillance Systems Quiz</h1>
-    <div class="timer" id="timer">15:00</div>
-    <form id="quizForm">
-        <!-- Questions -->
-    </form>
-    <button type="submit" form="quizForm">Submit Quiz</button>
+  <h1>ATS Surveillance Quiz</h1>
+  <div>Time Remaining: <span id="timer">15:00</span></div>
+  <form id="quizForm" onsubmit="submitQuiz(event)">
+    <ol>
+      <li>What is the primary purpose of ATS surveillance systems?
+        <ul>
+          <li><input type="radio" name="q1"> A) Weather monitoring</li>
+          <li><input type="radio" name="q1"> B) Aircraft tracking and separation</li>
+          <li><input type="radio" name="q1"> C) Airport maintenance</li>
+          <li><input type="radio" name="q1"> D) Passenger service</li>
+        </ul>
+      </li>
+      <li>What component is essential for an ATS surveillance system?
+        <ul>
+          <li><input type="radio" name="q2"> A) Baggage system</li>
+          <li><input type="radio" name="q2"> B) Surveillance sensors</li>
+          <li><input type="radio" name="q2"> C) Boarding gate data</li>
+          <li><input type="radio" name="q2"> D) Fuel system</li>
+        </ul>
+      </li>
+      <li>Situation displays should present:
+        <ul>
+          <li><input type="radio" name="q3"> A) Gate boarding information</li>
+          <li><input type="radio" name="q3"> B) Weather forecasts</li>
+          <li><input type="radio" name="q3"> C) Aircraft position and identification</li>
+          <li><input type="radio" name="q3"> D) Hotel accommodations</li>
+        </ul>
+      </li>
 
-    <script>
-        const questions = [
-            { q: "What is the primary purpose of ATS surveillance systems?", options: ["Weather monitoring", "Aircraft tracking and separation", "Airport maintenance", "Passenger service"], correct: 1 },
-            { q: "What component is essential for an ATS surveillance system?", options: ["Baggage system", "Surveillance sensors", "Boarding gate data", "Fuel system"], correct: 1 },
-            { q: "Situation displays should present:", options: ["Gate boarding information", "Weather forecasts", "Aircraft position and identification", "Hotel accommodations"], correct: 2 },
-            { q: "Which information must be in a surveillance label?", options: ["Passenger list", "Fuel status", "Aircraft identification and level", "Number of cabin crew"], correct: 2 },
-            { q: "Communication before providing surveillance services must be:", options: ["Indirect through dispatch", "Through automated systems", "Direct between controller and pilot", "Through the weather center"], correct: 2 },
-            { q: "True or False: ATS surveillance services can be provided without communication.", options: ["True", "False"], correct: 1 },
-            { q: "What must occur if surveillance system reliability degrades?", options: ["Ignore and continue", "Immediately limit or terminate service", "Call maintenance", "Increase display brightness"], correct: 1 },
-            { q: "SSR code 7600 indicates:", options: ["Hijacking", "Communication failure", "Low fuel", "Equipment test"], correct: 1 },
-            { q: "Conflict alerts notify controllers of:", options: ["Flight plan changes", "Potential collisions", "Gate assignments", "Passenger requests"], correct: 1 },
-            { q: "An aircraft without SSR capability must be displayed as:", options: ["Blank", "Predicted position only", "PSR blip", "Weather icon"], correct: 2 },
-            { q: "What symbol typically represents a radar target?", options: ["Square", "Triangle", "Hexagon", "Circle"], correct: 0 },
-            { q: "Who sets surveillance separation standards?", options: ["ICAO", "Airlines", "Manufacturers", "Airports"], correct: 0 },
-            { q: "ATS surveillance in the approach phase must:", options: ["Reduce separation", "Increase separation", "Ignore labels", "Focus only on taxi operations"], correct: 0 },
-            { q: "When surveillance services are interrupted, pilots must be:", options: ["Told after landing", "Immediately informed", "Ignored", "Advised via airline dispatch"], correct: 1 },
-            { q: "Which transponder modes support surveillance services?", options: ["Mode C and Mode S", "Mode B only", "Mode A only", "Mode T"], correct: 0 },
-            { q: "Label clutter on displays can:", options: ["Improve safety", "Reduce controller performance", "Increase speed", "Enhance communication"], correct: 1 },
-            { q: "Distance-based wake turbulence separation is applied in:", options: ["Low traffic", "Aerodrome surface movements", "En-route operations", "Terminal area operations"], correct: 3 },
-            { q: "A Heavy aircraft must be separated from a Light aircraft by at least:", options: ["2 NM", "3 NM", "4 NM", "5 NM"], correct: 3 },
-            { q: "What must controllers verify when issuing headings?", options: ["Aircraft color", "Proper SSR code", "Conflict-free path", "Call sign spelling"], correct: 2 },
-            { q: "Termination of vectoring must include:", options: ["New SSR code", "Current position information", "Fuel quantity", "Expected weather"], correct: 1 },
-            { q: "What is RVSM vertical tolerance?", options: ["±100 ft", "±200 ft", "±300 ft", "±500 ft"], correct: 2 },
-            { q: "Surveillance system failure backup includes:", options: ["Increased frequency changes", "Manual radar plotting", "Automated ticketing", "Emergency lighting"], correct: 1 },
-            { q: "Surface Movement Radar (SMR) assists:", options: ["Terminal gate planning", "Ground traffic monitoring", "Ticket sales", "Baggage handling"], correct: 1 },
-            { q: "Mode A identifies:", options: ["Altitude", "Position only", "Aircraft identity", "Weather type"], correct: 2 },
-            { q: "If two aircraft have identical SSR codes, the system must:", options: ["Alert the controller", "Ignore it", "Merge the tracks", "Display random codes"], correct: 0 },
-            { q: "Emergency transponder code 7500 means:", options: ["Radio failure", "Hijacking", "Lost navigation", "Fuel emergency"], correct: 1 },
-            { q: "What must happen if ADS-B tracking degrades?", options: ["Increase separation", "Ignore tracking", "Turn off surveillance", "Ask the pilot to call ATC"], correct: 0 },
-            { q: "Predicted position displays are used when:", options: ["The aircraft is too fast", "Updates are missing", "Pilot error occurs", "Surveillance weather is incorrect"], correct: 1 },
-            { q: "Minimum radar separation standard for en-route aircraft:", options: ["3 NM", "5 NM", "7 NM", "10 NM"], correct: 1 },
-            { q: "In missed approaches, controllers should:", options: ["Ignore aircraft", "Coordinate and provide vectoring", "Direct them to ground staff", "Shut down radar"], correct: 1 },
-            { q: "A label with a flashing symbol often indicates:", options: ["Weather change", "Emergency condition", "Taxiway closure", "Flight plan filed"], correct: 1 },
-            { q: "What action must be taken if a controller loses surveillance contact?", options: ["Ignore and continue", "Re-establish identification", "Ask the pilot to descend", "Close the flight plan"], correct: 1 },
-            { q: "Which equipment provides primary radar returns?", options: ["ADS-B receiver", "Secondary radar", "Primary Surveillance Radar", "VOR station"], correct: 2 },
-            { q: "ADS-B accuracy depends mainly on:", options: ["Aircraft color", "GNSS performance", "Altimeter settings", "Pilot entry"], correct: 1 },
-            { q: "SMR should be used in:", options: ["Bad weather only", "Routine ground movement control", "Ticket inspections", "Pilot licensing"], correct: 1 },
-            { q: "What happens to tracks after loss of identification?", options: ["Remain displayed forever", "Deleted immediately", "Remain for a predefined time", "Display error message only"], correct: 2 },
-            { q: "ATS surveillance enhances:", options: ["Baggage tracking", "Aircraft separation and efficiency", "Catering service", "Aircraft paint maintenance"], correct: 1 },
-            { q: "Which service uses ATS surveillance without direct control?", options: ["Alerting service", "Customs control", "Passenger check-in", "Meteorological reporting"], correct: 0 },
-            { q: "When SSR-only separation is used:", options: ["No verification needed", "It must meet reliability criteria", "It is automatic", "Manual plotting is required"], correct: 1 },
-            { q: "A conflict alert should prompt:", options: ["Controller action to prevent collision", "Weather update request", "Surface movement check", "Catering rescheduling"], correct: 0 }
-        ];
+      <script>
+      const questions = [
+        ["Which information must be in a surveillance label?", ["Passenger list", "Fuel status", "Aircraft identification and level", "Number of cabin crew"]],
+        ["Communication before providing surveillance services must be:", ["Indirect through dispatch", "Through automated systems", "Direct between controller and pilot", "Through the weather center"]],
+        ["True or False: ATS surveillance services can be provided without communication.", ["True", "False"]],
+        ["What must occur if surveillance system reliability degrades?", ["Ignore and continue", "Immediately limit or terminate service", "Call maintenance", "Increase display brightness"]],
+        ["SSR code 7600 indicates:", ["Hijacking", "Communication failure", "Low fuel", "Equipment test"]],
+        ["Conflict alerts notify controllers of:", ["Flight plan changes", "Potential collisions", "Gate assignments", "Passenger requests"]],
+        ["An aircraft without SSR capability must be displayed as:", ["Blank", "Predicted position only", "PSR blip", "Weather icon"]],
+        ["What symbol typically represents a radar target?", ["Square", "Triangle", "Hexagon", "Circle"]],
+        ["Who sets surveillance separation standards?", ["ICAO", "Airlines", "Manufacturers", "Airports"]],
+        ["ATS surveillance in the approach phase must:", ["Reduce separation", "Increase separation", "Ignore labels", "Focus only on taxi operations"]],
+        ["When surveillance services are interrupted, pilots must be:", ["Told after landing", "Immediately informed", "Ignored", "Advised via airline dispatch"]],
+        ["Which transponder modes support surveillance services?", ["Mode C and Mode S", "Mode B only", "Mode A only", "Mode T"]],
+        ["Label clutter on displays can:", ["Improve safety", "Reduce controller performance", "Increase speed", "Enhance communication"]],
+        ["Distance-based wake turbulence separation is applied in:", ["Low traffic", "Aerodrome surface movements", "En-route operations", "Terminal area operations"]],
+        ["A Heavy aircraft must be separated from a Light aircraft by at least:", ["2 NM", "3 NM", "4 NM", "5 NM"]],
+        ["What must controllers verify when issuing headings?", ["Aircraft color", "Proper SSR code", "Conflict-free path", "Call sign spelling"]],
+        ["Termination of vectoring must include:", ["New SSR code", "Current position information", "Fuel quantity", "Expected weather"]],
+        ["What is RVSM vertical tolerance?", ["±100 ft", "±200 ft", "±300 ft", "±500 ft"]],
+        ["Surveillance system failure backup includes:", ["Increased frequency changes", "Manual radar plotting", "Automated ticketing", "Emergency lighting"]],
+        ["Surface Movement Radar (SMR) assists:", ["Terminal gate planning", "Ground traffic monitoring", "Ticket sales", "Baggage handling"]],
+        ["Mode A identifies:", ["Altitude", "Position only", "Aircraft identity", "Weather type"]],
+        ["If two aircraft have identical SSR codes, the system must:", ["Alert the controller", "Ignore it", "Merge the tracks", "Display random codes"]],
+        ["Emergency transponder code 7500 means:", ["Radio failure", "Hijacking", "Lost navigation", "Fuel emergency"]],
+        ["What must happen if ADS-B tracking degrades?", ["Increase separation", "Ignore tracking", "Turn off surveillance", "Ask the pilot to call ATC"]],
+        ["Predicted position displays are used when:", ["The aircraft is too fast", "Updates are missing", "Pilot error occurs", "Surveillance weather is incorrect"]],
+        ["Minimum radar separation standard for en-route aircraft:", ["3 NM", "5 NM", "7 NM", "10 NM"]],
+        ["In missed approaches, controllers should:", ["Ignore aircraft", "Coordinate and provide vectoring", "Direct them to ground staff", "Shut down radar"]],
+        ["A label with a flashing symbol often indicates:", ["Weather change", "Emergency condition", "Taxiway closure", "Flight plan filed"]],
+        ["What action must be taken if a controller loses surveillance contact?", ["Ignore and continue", "Re-establish identification", "Ask the pilot to descend", "Close the flight plan"]],
+        ["Which equipment provides primary radar returns?", ["ADS-B receiver", "Secondary radar", "Primary Surveillance Radar", "VOR station"]],
+        ["ADS-B accuracy depends mainly on:", ["Aircraft color", "GNSS performance", "Altimeter settings", "Pilot entry"]],
+        ["SMR should be used in:", ["Bad weather only", "Routine ground movement control", "Ticket inspections", "Pilot licensing"]],
+        ["What happens to tracks after loss of identification?", ["Remain displayed forever", "Deleted immediately", "Remain for a predefined time", "Display error message only"]],
+        ["ATS surveillance enhances:", ["Baggage tracking", "Aircraft separation and efficiency", "Catering service", "Aircraft paint maintenance"]],
+        ["Which service uses ATS surveillance without direct control?", ["Alerting service", "Customs control", "Passenger check-in", "Meteorological reporting"]],
+        ["When SSR-only separation is used:", ["No verification needed", "It must meet reliability criteria", "It is automatic", "Manual plotting is required"]],
+        ["A conflict alert should prompt:", ["Controller action to prevent collision", "Weather update request", "Surface movement check", "Catering rescheduling"]],
+      ];
 
-        const quizForm = document.getElementById('quizForm');
-        questions.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'question';
-            div.innerHTML = `<h3>${index + 1}. ${item.q}</h3>` +
-                item.options.map((opt, i) => 
-                    `<label><input type="radio" name="q${index}" value="${i}"> ${opt}</label><br>`
-                ).join('');
-            quizForm.appendChild(div);
-        });
-
-        // Timer
-        let time = 15 * 60;
-        const timerElement = document.getElementById('timer');
-        const countdown = setInterval(() => {
-            const minutes = Math.floor(time / 60);
-            const seconds = time % 60;
-            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            time--;
-            if (time < 0) {
-                clearInterval(countdown);
-                alert('Time is up! Submitting the quiz.');
-                quizForm.submit();
-            }
-        }, 1000);
-    </script>
+      let ol = document.querySelector("ol");
+      questions.forEach((q, idx) => {
+        let li = document.createElement("li");
+        li.innerHTML = q[0] + '<ul>' +
+          q[1].map(opt => `<li><input type='radio' name='q${idx+4}'> ${opt}</li>`).join('') +
+          '</ul>';
+        ol.appendChild(li);
+      });
+      </script>
+    </ol>
+    <br>
+    <button type="submit">Submit Quiz</button>
+  </form>
 </body>
 </html>
